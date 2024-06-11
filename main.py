@@ -1,3 +1,6 @@
+# pip install -r requirements.txt 
+# 갱신시 pip freeze > requirements.txt
+
 import warnings
 from transformers import AutoProcessor, MusicgenForConditionalGeneration
 from IPython.display import Audio
