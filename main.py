@@ -12,8 +12,9 @@ warnings.filterwarnings("ignore", category=UserWarning, message="torch.nn.utils.
 warnings.filterwarnings("ignore", category=UserWarning, message="To copy construct from a tensor")
 
 # Load the processor and model
-processor = AutoProcessor.from_pretrained("facebook/musicgen-small")
-model = MusicgenForConditionalGeneration.from_pretrained("facebook/musicgen-small")
+model_name = "facebook/musicgen-small"
+processor = AutoProcessor.from_pretrained(model_name)
+model = MusicgenForConditionalGeneration.from_pretrained(model_name)
 
 # Define your text prompt
 text_prompt = ["Make music that sounds like you'd hear in a village shop in a medieval fantasy style"]
