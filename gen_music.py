@@ -1,7 +1,7 @@
-from transformers import AutoProcessor, MusicgenForConditionalGeneration
-import scipy.io.wavfile
 import torch
 import numpy as np
+import soundfile as sf
+from transformers import AutoProcessor, MusicgenForConditionalGeneration
 
 class GenMusic:
     def __init__(self, model_name="facebook/musicgen-large"):
@@ -39,18 +39,11 @@ class GenMusic:
         sampling_rate = self.model.config.audio_encoder.sampling_rate
         audio_array = audio_values[0].cpu().numpy()
         
-        # Normalize audio to 16-bit PCM range
-        audio_array = np.int16(audio_array / np.max(np.abs(audio_array)) * 32767)
+        # Normalize audio to the 16-bit signed PCM range (-32768 to 32767)
+        audio_array = audio_array / np.max(np.abs(audio_array))  # Normalize to [-1, 1]
+        audio_array = np.int16(audio_array * 32767)  # Scale to [-32768, 32767]
         
-        # Save the generated audio to a .wav file
-        scipy.io.wavfile.write("generated_music.wav", rate=sampling_rate, data=audio_array)
+        # Save the generated audio to a .wav file using soundfile, explicitly specifying format and subtype
+        sf.write("generated_music.wav", audio_array, sampling_rate, format='WAV', subtype='PCM_16')
         
         return audio_array, sampling_rate
-
-# # Example usage:
-# gen_music = GenMusic()
-# audio_array, sampling_rate = gen_music.do("80s pop track with bassy drums and synth", 60)
-
-# # Optionally, play the generated audio in a Jupyter notebook
-# from IPython.display import Audio
-# Audio(audio_array, rate=sampling_rate) if audio_array is not None else None
